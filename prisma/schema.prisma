@@ -1,0 +1,55 @@
+// 这个文件里面的modal是从api层里拷过来的，只是做类型生成用，本身并不会用来做其他的事情
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id          String         @id @default(cuid())
+  title       String         @unique
+  description String?
+  content     String
+  view        Int            @default(0)
+  isDeleted   Boolean        @default(false)
+  isPublished Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  publishedAt DateTime       @updatedAt
+  categories  PostCategory[]
+  tags        PostTag[]
+}
+
+model PostCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  posts       Post[]
+}
+
+model PostTag {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  posts       Post[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  avatar    String
+  password  String
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

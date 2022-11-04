@@ -1,0 +1,17 @@
+{
+  "vite": false,
+  "plugins": [
+    [
+      "build-plugin-ignore-style",
+      {
+        "libraryName": "antd"
+      }
+    ]
+  ],
+  "proxy": {
+    "/v1": {
+      "enable": true,
+      "target": "http://localhost:8000/"
+    }
+  }
+}
