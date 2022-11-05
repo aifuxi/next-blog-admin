@@ -1,29 +1,26 @@
 import React, { useMemo, useRef, useState } from 'react';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import { Category, CreateCategoryReq, CreateTagReq } from '@/types/post';
 import { Button, message, Switch, Tooltip } from 'antd';
-import { createCategory, queryCategory, updateCategory } from '@/pages/Post123/services/category';
 import { ProFormText, ProFormTextArea, ModalForm, ProFormInstance } from '@ant-design/pro-form';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { createPostCategory, findManyPostCategory, updatePostCategory } from '@/features/Post/services';
+import { CreatePostCategoryReq, PostCategory } from '@/features/Post/types';
 
-const emptyCategory = {
-  createdAt: '',
-  desc: '',
-  id: '',
-  isDelete: false,
-  name: '',
-  updatedAt: '',
-};
-const PostCategory: React.FC = () => {
+export const PostCategoryManagement: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  const formRef = useRef<ProFormInstance<CreateCategoryReq>>();
+  const formRef = useRef<ProFormInstance<CreatePostCategoryReq>>();
   const [visible, setVisible] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState<Category>(emptyCategory);
+  const [currentPostCategory, setCurrentPostCategory] = useState<PostCategory>({
+    description: '',
+    id: '',
+    isDeleted: false,
+    name: '',
+  });
 
   const title = useMemo(() => {
-    return currentCategory.id ? '编辑分类' : '新建分类';
-  }, [currentCategory]);
-  const columns: Array<ProColumns<Category>> = [
+    return currentPostCategory.id ? '编辑文章分类' : '新建文章分类';
+  }, [currentPostCategory]);
+  const columns: Array<ProColumns<PostCategory>> = [
     {
       title: '序号',
       dataIndex: 'index',
@@ -32,29 +29,29 @@ const PostCategory: React.FC = () => {
       search: false,
     },
     {
-      title: '分类ID',
-      width: 120,
+      title: '文章分类ID',
+      width: 250,
       ellipsis: true,
       dataIndex: 'id',
       copyable: true,
     },
     {
-      title: '分类名称',
+      title: '文章分类名称',
       width: 150,
       ellipsis: true,
       dataIndex: 'name',
       copyable: true,
     },
     {
-      title: '分类简介',
-      width: 700,
+      title: '文章分类简介',
+      width: 500,
       ellipsis: true,
-      dataIndex: 'desc',
+      dataIndex: 'description',
       search: false,
     },
     {
       title: '是否删除',
-      dataIndex: 'isDelete',
+      dataIndex: 'isDeleted',
       width: 80,
       align: 'center',
       fixed: 'right',
@@ -62,9 +59,9 @@ const PostCategory: React.FC = () => {
       render: (_, post) => {
         return (
           <Switch
-            checked={post.isDelete}
-            onClick={async (isDelete) => {
-              await updateCategory(post.id, { isDelete });
+            checked={post.isDeleted}
+            onClick={async (isDeleted) => {
+              await updatePostCategory(post.id, { isDeleted });
               actionRef.current?.reload();
             }}
           />
@@ -96,11 +93,11 @@ const PostCategory: React.FC = () => {
       search: false,
       render: (_, category) => {
         return (
-          <Tooltip placement="top" title="编辑文章分类">
+          <Tooltip placement="top" title="编辑文章文章分类">
             <Button
               icon={<EditOutlined />}
               onClick={() => {
-                setCurrentCategory(category);
+                setCurrentPostCategory(category);
                 const timer = window.setTimeout(() => {
                   // 这里设置延时是因为第一次，form可能未创建，立即设置值可能不生效，所以设置延时
                   formRef.current?.setFieldsValue(category);
@@ -118,26 +115,26 @@ const PostCategory: React.FC = () => {
   return (
     <>
       <ModalForm
-        visible={visible}
+        open={visible}
         formRef={formRef}
         title={title}
-        onVisibleChange={(v) => {
+        onOpenChange={(v) => {
           setVisible(v);
         }}
         trigger={
           <Button type="primary" style={{ marginBottom: 12 }} onClick={() => setVisible(true)}>
             <PlusOutlined />
-            新建分类
+            新建文章分类
           </Button>
         }
-        onFinish={async (values: CreateTagReq) => {
-          if (currentCategory.id) {
+        onFinish={async (values: CreatePostCategoryReq) => {
+          if (currentPostCategory.id) {
             // 存在id,则是编辑状态
-            await updateCategory(currentCategory.id, { name: values.name, desc: values.desc });
+            await updatePostCategory(currentPostCategory.id, { name: values.name, description: values.description });
             message.success('修改成功');
           } else {
             // 创建
-            await createCategory(values);
+            await createPostCategory(values);
             message.success('创建成功');
           }
           console.log(values);
@@ -150,32 +147,23 @@ const PostCategory: React.FC = () => {
           rules={[
             {
               required: true,
-              message: '请输入文章标题',
+              message: '请输入文章分类名称',
             },
           ]}
           name="name"
-          label="分类名称"
-          placeholder="请输入分类名称"
+          label="文章分类名称"
+          placeholder="请输入文章分类名称"
         />
-        <ProFormTextArea
-          rules={[
-            {
-              required: true,
-              message: '请输入文章标题',
-            },
-          ]}
-          name="desc"
-          label="分类描述"
-          placeholder="请输入分类描述"
-        />
+        <ProFormTextArea name="description" label="文章分类描述" placeholder="请输入文章分类描述" />
       </ModalForm>
 
-      <ProTable<Category>
+      <ProTable<PostCategory>
         columns={columns}
         actionRef={actionRef}
         scroll={{ x: 1500 }}
         search={{
           collapsed: false,
+          labelWidth: 100,
         }}
         pagination={{
           pageSize: 10,
@@ -184,18 +172,17 @@ const PostCategory: React.FC = () => {
           // 表单搜索项会从 params 传入，传递给后端接口。
           console.log(params, sorter, filter);
           const { current: page = 1, pageSize = 10, name, id } = params;
-          const { data } = await queryCategory({ name, page, pageSize, id });
+          const { data } = await findManyPostCategory({ name, id, offset: (page - 1) * pageSize, limit: pageSize });
           return Promise.resolve({
-            data,
+            data: data.lists,
+            total: data.total,
             success: true,
           });
         }}
         rowKey={(record) => record.id}
         dateFormatter="string"
-        headerTitle="分类列表"
+        headerTitle="文章分类列表"
       />
     </>
   );
 };
-
-export default PostCategory;

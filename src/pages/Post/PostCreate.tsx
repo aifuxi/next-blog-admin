@@ -1,3 +1,3 @@
-import { PostCreate } from '@/features/Post';
+import { PostCreate } from './';
 
 export default PostCreate;

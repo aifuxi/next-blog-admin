@@ -5,12 +5,16 @@ import { useHistory, useParams, useRequest } from 'ice';
 import { DefaultOptionType } from 'antd/lib/select';
 import { CreatePostReq } from './types';
 import { createPost, findManyPostCategory, findManyPostTag, getPost, updatePost } from './services';
-import { message, Space } from 'antd';
+import { message, Row, Space, Col } from 'antd';
 import { POST_MANAGE_URL } from '@/constants/path';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import Editor from '@monaco-editor/react';
+import rehypeRaw from 'rehype-raw';
 
 export const PostCreate: React.FC = () => {
   const history = useHistory();
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState('## 写点什么吧...');
 
   const formRef = useRef<FormInstance>();
 
@@ -71,92 +75,114 @@ export const PostCreate: React.FC = () => {
     }
   }, [categoryData]);
 
+  const handleEditorChange = (value) => {
+    console.log('here is the current model value:', value);
+    setContent(value);
+  };
+
   return (
     <PageContainer
       content={
-        <ProForm
-          formRef={formRef}
-          layout={'inline'}
-          grid
-          rowProps={{
-            gutter: [16, 16],
-          }}
-          submitter={{
-            render: (props, doms) => {
-              return <Space style={{ marginTop: 16 }}>{doms}</Space>;
-            },
-          }}
-          onFinish={async (value) => {
-            const req: CreatePostReq = { content, ...value };
-            const { title, description, tags, categories } = req;
-            if (id) {
-              // 更新文章
-              await updatePost(id, { title, description, tags, content, categories });
-              message.success(`【${value.title}】文章修改成功`);
-            } else {
-              // 创建文章
-              await createPost(req);
-              message.success(`【${value.title}】文章创建成功`);
-            }
-            setContent('');
-            formRef.current?.resetFields();
+        <>
+          <ProForm
+            formRef={formRef}
+            layout={'inline'}
+            grid
+            rowProps={{
+              gutter: [16, 16],
+            }}
+            submitter={{
+              render: (props, doms) => {
+                return <Space style={{ margin: 16 }}>{doms}</Space>;
+              },
+            }}
+            onFinish={async (value) => {
+              const req: CreatePostReq = { content, ...value };
+              const { title, description, tags, categories } = req;
+              if (id) {
+                // 更新文章
+                await updatePost(id, { title, description, tags, content, categories });
+                message.success(`【${value.title}】文章修改成功`);
+              } else {
+                // 创建文章
+                await createPost(req);
+                message.success(`【${value.title}】文章创建成功`);
+              }
+              setContent('');
+              formRef.current?.resetFields();
 
-            history.push(POST_MANAGE_URL);
-          }}
-        >
-          <ProFormText
-            name="title"
-            label="文章标题"
-            width="md"
-            colProps={{
-              span: 8,
+              history.push(POST_MANAGE_URL);
             }}
-            placeholder={'请输入文章标题'}
-            rules={[
-              {
-                required: true,
-                message: '请输入文章标题',
-              },
-            ]}
-          />
-          <ProFormSelect
-            placeholder={'请选择文章分类'}
-            mode={'multiple'}
-            options={categoryOptions}
-            width={'md'}
-            colProps={{
-              span: 8,
-            }}
-            name="categories"
-            label="文章分类"
-          />
-          <ProFormSelect
-            placeholder={'请选择文章标签'}
-            mode={'multiple'}
-            width={'md'}
-            colProps={{
-              span: 8,
-            }}
-            options={tagOptions}
-            name="tags"
-            label="文章标签"
-          />
-          <ProFormTextArea
-            width="xl"
-            label="文章简介"
-            colProps={{
-              span: 24,
-            }}
-            placeholder={'请输入文章简介'}
-            rules={[
-              {
-                required: true,
-                message: '请输入文章简介',
-              },
-            ]}
-            name="description"
-          />
-        </ProForm>
+          >
+            <ProFormText
+              name="title"
+              label="文章标题"
+              width="md"
+              colProps={{
+                span: 8,
+              }}
+              placeholder={'请输入文章标题'}
+              rules={[
+                {
+                  required: true,
+                  message: '请输入文章标题',
+                },
+              ]}
+            />
+            <ProFormSelect
+              placeholder={'请选择文章分类'}
+              mode={'multiple'}
+              options={categoryOptions}
+              width={'md'}
+              colProps={{
+                span: 8,
+              }}
+              name="categories"
+              label="文章分类"
+            />
+            <ProFormSelect
+              placeholder={'请选择文章标签'}
+              mode={'multiple'}
+              width={'md'}
+              colProps={{
+                span: 8,
+              }}
+              options={tagOptions}
+              name="tags"
+              label="文章标签"
+            />
+            <ProFormTextArea
+              width="xl"
+              label="文章简介"
+              colProps={{
+                span: 24,
+              }}
+              placeholder={'请输入文章简介'}
+              rules={[
+                {
+                  required: true,
+                  message: '请输入文章简介',
+                },
+              ]}
+              name="description"
+            />
+          </ProForm>
+          <Row style={{ border: '1px solid #ccc' }}>
+            <Col span={12}>
+              <Editor
+                height="90vh"
+                theme={'vs-dark'}
+                defaultLanguage="markdown"
+                defaultValue={content}
+                onChange={handleEditorChange}
+              />
+            </Col>
+            <Col span={12}>
+              {/* eslint-disable-next-line react/no-children-prop */}
+              <ReactMarkdown children={content} remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} />
+            </Col>
+          </Row>
+        </>
       }
     />
   );
