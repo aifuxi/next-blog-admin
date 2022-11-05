@@ -10,7 +10,7 @@ export function createPost(data: CreatePostReq): Promise<IResponse<Post>> {
 }
 
 export function getPost(id: string): Promise<IResponse<Post>> {
-  return request(`${POSTS}/${id}`);
+  return request.get(`${POSTS}/${id}`);
 }
 
 export function updatePost(id: string, data: UpdatePostReq): Promise<IResponse<Post>> {
@@ -20,4 +20,8 @@ export function updatePost(id: string, data: UpdatePostReq): Promise<IResponse<P
 export function findManyPosts(data: FindManyPostReq): Promise<IListResponse<Post[]>> {
   const query = qs.stringify(data);
   return request.get(`${POSTS}?${query}`);
+}
+
+export function deletePost(id: string): Promise<IResponse<Post>> {
+  return request.delete(`${POSTS}/${id}`);
 }

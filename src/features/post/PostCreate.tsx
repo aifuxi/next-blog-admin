@@ -5,12 +5,9 @@ import { PageContainer } from '@ant-design/pro-layout';
 import ProForm, { ProFormText, ProFormSelect, ProFormTextArea, FormInstance } from '@ant-design/pro-form';
 import { useHistory, useParams, useRequest } from 'ice';
 import { DefaultOptionType } from 'antd/lib/select';
-import { message, Row, Space, Col } from 'antd';
+import { message, Space } from 'antd';
 import { POST_MANAGE_URL } from '@/constants/path';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import Editor from '@monaco-editor/react';
-import rehypeRaw from 'rehype-raw';
+import MarkdownEditor from '@/components/MarkdownEditor';
 
 export const PostCreate: React.FC = () => {
   const history = useHistory();
@@ -73,10 +70,6 @@ export const PostCreate: React.FC = () => {
       return [];
     }
   }, [categoryData]);
-
-  const handleEditorChange = (value) => {
-    setContent(value);
-  };
 
   return (
     <PageContainer
@@ -156,30 +149,10 @@ export const PostCreate: React.FC = () => {
                 span: 24,
               }}
               placeholder={'请输入文章简介'}
-              rules={[
-                {
-                  required: true,
-                  message: '请输入文章简介',
-                },
-              ]}
               name="description"
             />
           </ProForm>
-          <Row style={{ border: '1px solid #ccc' }}>
-            <Col span={12}>
-              <Editor
-                height="90vh"
-                theme={'vs-dark'}
-                defaultLanguage="markdown"
-                defaultValue={content}
-                onChange={handleEditorChange}
-              />
-            </Col>
-            <Col span={12}>
-              {/* eslint-disable-next-line react/no-children-prop */}
-              <ReactMarkdown children={content} remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]} />
-            </Col>
-          </Row>
+          <MarkdownEditor modelValue={content} codeTheme={'atom'} showCodeRowNumber onChange={setContent} />
         </>
       }
     />

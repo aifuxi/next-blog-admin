@@ -24,3 +24,7 @@ export function findManyPostCategory(data: FindManyPostCategoryReq): Promise<ILi
   const query = qs.stringify(data);
   return request.get(`${POST_CATEGORIES}?${query}`);
 }
+
+export function deletePostCategory(id: string): Promise<IResponse<PostCategory>> {
+  return request.delete(`${POST_CATEGORIES}/${id}`);
+}

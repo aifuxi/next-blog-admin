@@ -1,1 +1,1 @@
-export { PostCreate } from '@/features/post';
+export { PostCreate, PostManagement } from '@/features/post';

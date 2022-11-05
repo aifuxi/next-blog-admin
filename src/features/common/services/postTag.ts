@@ -17,3 +17,7 @@ export function findManyPostTag(data: FindManyPostTagReq): Promise<IListResponse
   const query = qs.stringify(data);
   return request.get(`${POST_TAGS}?${query}`);
 }
+
+export function deletePostTag(id: string): Promise<IResponse<PostTag>> {
+  return request.delete(`${POST_TAGS}/${id}`);
+}

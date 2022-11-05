@@ -36,7 +36,7 @@ const appConfig: IAppConfig = {
           // 未登录，或登录过期
           if (error?.response?.status === HTTP_STATUS_CODE.UNAUTHORIZED) {
             message.destroy();
-            message.loading('登录信息过期···', 2.5).then(() => {
+            message.loading('登录信息过期···', 1).then(() => {
               setToken('');
               window.localStorage.clear();
               window.location.href = LOGIN_URL;

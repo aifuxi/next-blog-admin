@@ -167,7 +167,7 @@ export const PostCategoryManagement: React.FC = () => {
         pagination={{
           pageSize: 10,
         }}
-        request={async (params, sorter, filter) => {
+        request={async (params) => {
           // 表单搜索项会从 params 传入，传递给后端接口。
           const { current: page = 1, pageSize = 10, name, id } = params;
           const { data } = await findManyPostCategory({ name, id, offset: (page - 1) * pageSize, limit: pageSize });

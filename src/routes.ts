@@ -1,18 +1,25 @@
-import { IRouterConfig, lazy } from 'ice';
+import { IRouterConfig } from 'ice';
 import Layout from '@/components/layouts/BasicLayout';
-import { HOME_URL, LOGIN_URL, POST_CATEGORY_URL, POST_CREAT_URL, POST_TAG_URL } from '@/constants/path';
-
-const Login = lazy(() => import('@/pages/Login'));
-const Home = lazy(() => import('@/pages/Home'));
-const PostCreate = lazy(() => import('@/pages/Post/PostCreate'));
-const PostCategoryManagement = lazy(() => import('@/pages/PostCategories/PostCategoryManagement'));
-const PostTagManagement = lazy(() => import('@/pages/PostTags/PostTagManagement'));
-const NotFound = lazy(() => import('@/components/NotFound'));
+import {
+  HOME_URL,
+  LOGIN_URL,
+  POST_CATEGORY_URL,
+  POST_CREAT_URL,
+  POST_EDIT_URL,
+  POST_MANAGE_URL,
+  POST_TAG_URL,
+} from '@/constants/path';
+import Home from '@/pages/Home';
+import { LoginPage } from '@/pages/Login';
+import { PostCreate, PostManagement } from '@/pages/Post';
+import { PostTagManagement } from '@/pages/PostTags';
+import { PostCategoryManagement } from '@/pages/PostCategories';
+import NotFound from '@/components/NotFound';
 
 const routerConfig: IRouterConfig[] = [
   {
     path: LOGIN_URL,
-    component: Login,
+    component: LoginPage,
   },
   {
     path: HOME_URL,
@@ -26,6 +33,14 @@ const routerConfig: IRouterConfig[] = [
       {
         path: POST_CREAT_URL,
         component: PostCreate,
+      },
+      {
+        path: POST_EDIT_URL,
+        component: PostCreate,
+      },
+      {
+        path: POST_MANAGE_URL,
+        component: PostManagement,
       },
       {
         path: POST_TAG_URL,
