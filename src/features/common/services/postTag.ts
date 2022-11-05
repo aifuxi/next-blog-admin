@@ -1,6 +1,5 @@
 import { request } from 'ice';
-import { IListResponse, IResponse } from '@/types/base';
-import { PostTag, CreatePostTagReq, UpdatePostTagReq, FindManyPostTagReq } from '../types';
+import { PostTag, CreatePostTagReq, UpdatePostTagReq, FindManyPostTagReq, IListResponse, IResponse } from '../types';
 import qs from 'qs';
 import { v1 } from '@/constants/apiVersion';
 

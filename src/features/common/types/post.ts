@@ -1,5 +1,6 @@
 import { Post as PrismaPost, PostTag, PostCategory, Prisma } from '@prisma/client';
-import { PaginationReq } from '@/types/base';
+import { PaginationReq } from './base';
+import { PostSortByEnum } from './sort-enum';
 
 export interface CreatePostReq {
   title: string;
@@ -14,17 +15,6 @@ export type UpdatePostReq = Partial<CreatePostReq>;
 export interface Post extends PrismaPost {
   categories?: PostTag[];
   tags?: PostCategory[];
-}
-
-export enum SortByEnum {
-  createdTime = 'createdTime',
-  updatedTime = 'updatedTime',
-}
-
-export enum PostSortByEnum {
-  createdTime = 'createdTime',
-  updatedTime = 'updatedTime',
-  publishedTime = 'publishedTime',
 }
 
 export interface FindManyPostReq extends PaginationReq {

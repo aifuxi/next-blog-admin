@@ -1,10 +1,10 @@
+import { getPost, updatePost, createPost, findManyPostCategory, findManyPostTag } from '@/features/common/services';
+import { CreatePostReq } from '@/features/common/types';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProForm, { ProFormText, ProFormSelect, ProFormTextArea, FormInstance } from '@ant-design/pro-form';
 import { useHistory, useParams, useRequest } from 'ice';
 import { DefaultOptionType } from 'antd/lib/select';
-import { CreatePostReq } from './types';
-import { createPost, findManyPostCategory, findManyPostTag, getPost, updatePost } from './services';
 import { message, Row, Space, Col } from 'antd';
 import { POST_MANAGE_URL } from '@/constants/path';
 import ReactMarkdown from 'react-markdown';
@@ -30,7 +30,6 @@ export const PostCreate: React.FC = () => {
   useEffect(() => {
     id &&
       getPost(id).then(({ data }) => {
-        console.log(data);
         setContent(data.content);
         message.loading({ content: '正在获取文章数据', duration: 1 }).then(() => {
           formRef.current?.setFieldsValue({
@@ -76,7 +75,6 @@ export const PostCreate: React.FC = () => {
   }, [categoryData]);
 
   const handleEditorChange = (value) => {
-    console.log('here is the current model value:', value);
     setContent(value);
   };
 

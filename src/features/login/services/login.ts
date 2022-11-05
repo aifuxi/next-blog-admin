@@ -1,6 +1,6 @@
 import { request } from 'ice';
-import { IResponse } from '@/types/base';
-import { LoginDto, LoginRes } from '@/pages/Login/types/login';
+import { IResponse } from '@/features/common/types/base';
+import { LoginDto, LoginRes } from '../types';
 import { v1 } from '@/constants/apiVersion';
 
 export const LOGIN = `${v1}/auth/login`;

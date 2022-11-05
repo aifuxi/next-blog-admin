@@ -1,8 +1,6 @@
 import { request } from 'ice';
-import { IListResponse, IResponse } from '@/types/base';
 import { v1 } from '@/constants/apiVersion';
-import { CreatePostReq, UpdatePostReq, Post } from '../types';
-import { FindManyPostReq } from '@/features/Post/types';
+import { CreatePostReq, UpdatePostReq, Post, FindManyPostReq, IListResponse, IResponse } from '../types';
 import qs from 'qs';
 
 export const POSTS = `${v1}/posts`;

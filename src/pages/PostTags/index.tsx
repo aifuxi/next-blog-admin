@@ -1,1 +1,1 @@
-export { PostTagManagement } from '@/features/PostTag';
+export { PostTagManagement } from '@/features/post-tag';

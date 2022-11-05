@@ -4,7 +4,7 @@ import { message } from 'antd';
 import { HTTP_STATUS_CODE } from '@/constants/http';
 import { LOGIN_URL } from '@/constants/path';
 import { AxiosError } from 'axios';
-import { IResponse } from '@/types/base';
+import { IResponse } from '@/features/common/types/base';
 
 const appConfig: IAppConfig = {
   app: {
@@ -46,10 +46,7 @@ const appConfig: IAppConfig = {
           } else {
             message.error(error?.response?.data.message || '系统错误');
           }
-          // 请求出错：服务端返回错误状态码
-          /*          console.log(error?.response?.data);
-          console.log(error?.response?.status);
-          console.log(error?.response?.headers); */
+
           return Promise.reject(error);
         },
       },

@@ -1,1 +1,1 @@
-export { PostCategoryManagement } from '@/features/PostCategory';
+export { PostCategoryManagement } from '@/features/post-category';

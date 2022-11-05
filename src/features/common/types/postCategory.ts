@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
-import { PaginationReq } from '@/types/base';
-import { SortByEnum } from './post';
+import { PaginationReq } from './base';
+import { SortByEnum } from './sort-enum';
 
 export interface CreatePostCategoryReq {
   name: string;

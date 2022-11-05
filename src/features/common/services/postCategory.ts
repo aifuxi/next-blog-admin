@@ -1,7 +1,13 @@
 import { request } from 'ice';
-import { IListResponse, IResponse } from '@/types/base';
 import { v1 } from '@/constants/apiVersion';
-import { PostCategory, CreatePostCategoryReq, UpdatePostCategoryReq, FindManyPostCategoryReq } from '../types';
+import {
+  PostCategory,
+  CreatePostCategoryReq,
+  UpdatePostCategoryReq,
+  FindManyPostCategoryReq,
+  IListResponse,
+  IResponse,
+} from '../types';
 import qs from 'qs';
 
 export const POST_CATEGORIES = `${v1}/post_categories`;

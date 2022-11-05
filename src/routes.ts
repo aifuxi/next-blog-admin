@@ -1,8 +1,8 @@
 import { IRouterConfig, lazy } from 'ice';
 import Layout from '@/components/layouts/BasicLayout';
-import Login from '@/pages/Login';
 import { HOME_URL, LOGIN_URL, POST_CATEGORY_URL, POST_CREAT_URL, POST_TAG_URL } from '@/constants/path';
 
+const Login = lazy(() => import('@/pages/Login'));
 const Home = lazy(() => import('@/pages/Home'));
 const PostCreate = lazy(() => import('@/pages/Post/PostCreate'));
 const PostCategoryManagement = lazy(() => import('@/pages/PostCategories/PostCategoryManagement'));
