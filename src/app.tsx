@@ -12,6 +12,7 @@ const appConfig: IAppConfig = {
   },
   router: {
     type: 'browser',
+    basename: '/admin',
   },
   request: {
     // 拦截器
