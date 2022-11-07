@@ -13,5 +13,6 @@
       "enable": true,
       "target": "http://localhost:8000/"
     }
-  }
+  },
+  "publicPath": "/admin/"
 }
