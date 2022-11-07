@@ -1,6 +1,7 @@
 import { IRouterConfig } from 'ice';
 import Layout from '@/components/layouts/BasicLayout';
 import {
+  ABOUT_URL,
   HOME_URL,
   LOGIN_URL,
   POST_CATEGORY_URL,
@@ -15,6 +16,7 @@ import { PostCreate, PostManagement } from '@/pages/Post';
 import { PostTagManagement } from '@/pages/PostTags';
 import { PostCategoryManagement } from '@/pages/PostCategories';
 import NotFound from '@/components/NotFound';
+import { AboutPage } from '@/features/about';
 
 const routerConfig: IRouterConfig[] = [
   {
@@ -49,6 +51,10 @@ const routerConfig: IRouterConfig[] = [
       {
         path: POST_CATEGORY_URL,
         component: PostCategoryManagement,
+      },
+      {
+        path: ABOUT_URL,
+        component: AboutPage,
       },
       {
         component: NotFound,

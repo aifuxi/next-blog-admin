@@ -2,6 +2,7 @@ import { createElement } from 'react';
 import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
 import { Link } from 'ice';
 import { asideMenuConfig } from './menuConfig';
+import { BLOG_TITLE } from '@/constants/blog';
 
 const loopMenuItem = (menus) =>
   menus.map(({ icon, children, ...item }) => ({
@@ -13,7 +14,7 @@ const loopMenuItem = (menus) =>
 export default function BasicLayout({ children, location }) {
   return (
     <ProLayout
-      title="F西的博客后台"
+      title={`${BLOG_TITLE}后台`}
       style={{
         minHeight: '100vh',
       }}

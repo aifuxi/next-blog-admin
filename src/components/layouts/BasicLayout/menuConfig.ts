@@ -1,5 +1,6 @@
 import { HeartOutlined, HomeOutlined, FileMarkdownOutlined, UserOutlined } from '@ant-design/icons';
 import {
+  ABOUT_URL,
   HOME_URL,
   POST_CATEGORY_URL,
   POST_CREAT_URL,
@@ -45,6 +46,11 @@ const asideMenuConfig = [
   {
     name: '个人信息',
     path: USER_PROFILE_URL,
+    icon: UserOutlined,
+  },
+  {
+    name: '关于',
+    path: ABOUT_URL,
     icon: UserOutlined,
   },
 ];
