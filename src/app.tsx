@@ -12,7 +12,8 @@ const appConfig: IAppConfig = {
   },
   router: {
     type: 'browser',
-    basename: '/admin',
+    // basename配置一定要是以/开头，并且以/结尾
+    basename: '/admin/',
   },
   request: {
     // 拦截器
