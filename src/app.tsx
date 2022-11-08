@@ -41,7 +41,7 @@ const appConfig: IAppConfig = {
             message.loading('登录信息过期···', 1).then(() => {
               setToken('');
               window.localStorage.clear();
-              window.location.href = LOGIN_URL;
+              window.location.href = `/admin${LOGIN_URL}`;
             });
           } else if (error?.response?.status === HTTP_STATUS_CODE.BAD_REQUEST) {
             message.error(error?.response?.data.message || '请求参数错误');
