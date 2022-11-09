@@ -7,7 +7,7 @@ import {
   POST_MANAGE_URL,
   POST_TAG_URL,
   POST_URL,
-  USER_PROFILE_URL,
+  PROFILE_URL,
 } from '@/constants/path';
 
 const asideMenuConfig = [
@@ -44,13 +44,13 @@ const asideMenuConfig = [
     ],
   },
   {
-    name: '个人信息',
-    path: USER_PROFILE_URL,
+    name: '关于',
+    path: ABOUT_URL,
     icon: UserOutlined,
   },
   {
-    name: '关于',
-    path: ABOUT_URL,
+    name: 'profile',
+    path: PROFILE_URL,
     icon: UserOutlined,
   },
 ];

@@ -9,3 +9,5 @@ export * from './postTag';
 export * from './sort-enum';
 
 export * from './about';
+
+export * from './profile';

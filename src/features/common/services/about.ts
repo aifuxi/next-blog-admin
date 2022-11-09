@@ -1,7 +1,6 @@
 import { request } from 'ice';
 import { v1 } from '@/constants/apiVersion';
-import { IListResponse, IResponse, About, CreateAboutReq, FindManyAboutReq, UpdateAboutReq } from '../types';
-import qs from 'qs';
+import { IResponse, About, CreateAboutReq, UpdateAboutReq } from '../types';
 
 export const ABOUT = `${v1}/about`;
 
@@ -15,11 +14,6 @@ export function getAbout(): Promise<IResponse<About>> {
 
 export function updateAbout(id: string, data: UpdateAboutReq): Promise<IResponse<About>> {
   return request.patch(`${ABOUT}/${id}`, data);
-}
-
-export function findManyAbout(data: FindManyAboutReq): Promise<IListResponse<About[]>> {
-  const query = qs.stringify(data);
-  return request.get(`${ABOUT}?${query}`);
 }
 
 export function deleteAbout(id: string): Promise<IResponse<About>> {

@@ -8,3 +8,4 @@ export const POST_TAG_URL = '/post_tags';
 export const POST_CATEGORY_URL = '/post_categories';
 export const USER_PROFILE_URL = '/user/profile';
 export const ABOUT_URL = '/about';
+export const PROFILE_URL = '/profile';

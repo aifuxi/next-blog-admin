@@ -9,6 +9,7 @@ import {
   POST_EDIT_URL,
   POST_MANAGE_URL,
   POST_TAG_URL,
+  PROFILE_URL,
 } from '@/constants/path';
 import Home from '@/pages/Home';
 import { LoginPage } from '@/pages/Login';
@@ -17,6 +18,7 @@ import { PostTagManagement } from '@/pages/PostTags';
 import { PostCategoryManagement } from '@/pages/PostCategories';
 import NotFound from '@/components/NotFound';
 import { AboutPage } from '@/features/about';
+import { ProfilePage } from '@/features/profile';
 
 const routerConfig: IRouterConfig[] = [
   {
@@ -55,6 +57,10 @@ const routerConfig: IRouterConfig[] = [
       {
         path: ABOUT_URL,
         component: AboutPage,
+      },
+      {
+        path: PROFILE_URL,
+        component: ProfilePage,
       },
       {
         component: NotFound,
