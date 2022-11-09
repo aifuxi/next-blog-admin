@@ -1,4 +1,11 @@
-import { getPost, updatePost, createPost, findManyPostCategory, findManyPostTag } from '@/features/common/services';
+import {
+  getPost,
+  updatePost,
+  createPost,
+  findManyPostCategory,
+  findManyPostTag,
+  uploadFile,
+} from '@/features/common/services';
 import { CreatePostReq } from '@/features/common/types';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -8,6 +15,8 @@ import { DefaultOptionType } from 'antd/lib/select';
 import { message, Space } from 'antd';
 import { POST_MANAGE_URL } from '@/constants/path';
 import MarkdownEditor from '@/components/MarkdownEditor';
+
+type OnUploadImgFnType = React.ComponentProps<typeof MarkdownEditor>['onUploadImg'];
 
 export const PostCreate: React.FC = () => {
   const history = useHistory();
@@ -70,6 +79,15 @@ export const PostCreate: React.FC = () => {
       return [];
     }
   }, [categoryData]);
+
+  const handleUpload: OnUploadImgFnType = async (files, callBack) => {
+    if (files.length > 1) {
+      message.warn('一次只能上传一张图片');
+      return;
+    }
+    const { data } = await uploadFile(files[0]);
+    return callBack([data.url]);
+  };
 
   return (
     <PageContainer
@@ -152,7 +170,13 @@ export const PostCreate: React.FC = () => {
               name="description"
             />
           </ProForm>
-          <MarkdownEditor modelValue={content} codeTheme={'atom'} showCodeRowNumber onChange={setContent} />
+          <MarkdownEditor
+            modelValue={content}
+            codeTheme={'atom'}
+            showCodeRowNumber
+            onChange={setContent}
+            onUploadImg={handleUpload}
+          />
         </>
       }
     />
