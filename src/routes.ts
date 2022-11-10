@@ -1,7 +1,7 @@
 import { IRouterConfig } from 'ice';
 import Layout from '@/components/layouts/BasicLayout';
 import {
-  ABOUT_URL,
+  BLOG_ABOUT_URL,
   HOME_URL,
   LOGIN_URL,
   POST_CATEGORY_URL,
@@ -9,7 +9,7 @@ import {
   POST_EDIT_URL,
   POST_MANAGE_URL,
   POST_TAG_URL,
-  PROFILE_URL,
+  BLOG_PROFILE_URL,
 } from '@/constants/path';
 import Home from '@/pages/Home';
 import { LoginPage } from '@/pages/Login';
@@ -55,11 +55,11 @@ const routerConfig: IRouterConfig[] = [
         component: PostCategoryManagement,
       },
       {
-        path: ABOUT_URL,
+        path: BLOG_ABOUT_URL,
         component: AboutPage,
       },
       {
-        path: PROFILE_URL,
+        path: BLOG_PROFILE_URL,
         component: ProfilePage,
       },
       {

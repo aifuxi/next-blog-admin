@@ -1,13 +1,21 @@
-import { HeartOutlined, HomeOutlined, FileMarkdownOutlined, UserOutlined } from '@ant-design/icons';
 import {
-  ABOUT_URL,
+  HeartOutlined,
+  HomeOutlined,
+  FileMarkdownOutlined,
+  SolutionOutlined,
+  SettingOutlined,
+  BoldOutlined,
+} from '@ant-design/icons';
+import {
+  BLOG_ABOUT_URL,
   HOME_URL,
   POST_CATEGORY_URL,
   POST_CREAT_URL,
   POST_MANAGE_URL,
   POST_TAG_URL,
   POST_URL,
-  PROFILE_URL,
+  BLOG_PROFILE_URL,
+  BLOG_URL,
 } from '@/constants/path';
 
 const asideMenuConfig = [
@@ -44,14 +52,21 @@ const asideMenuConfig = [
     ],
   },
   {
-    name: '关于',
-    path: ABOUT_URL,
-    icon: UserOutlined,
-  },
-  {
-    name: 'profile',
-    path: PROFILE_URL,
-    icon: UserOutlined,
+    name: '博客配置',
+    path: BLOG_URL,
+    icon: BoldOutlined,
+    routes: [
+      {
+        name: '关于',
+        path: BLOG_ABOUT_URL,
+        icon: SolutionOutlined,
+      },
+      {
+        name: '首页',
+        path: BLOG_PROFILE_URL,
+        icon: SettingOutlined,
+      },
+    ],
   },
 ];
 
