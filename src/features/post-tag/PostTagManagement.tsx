@@ -1,10 +1,11 @@
 import React, { useMemo, useRef, useState } from 'react';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import { Button, message, Switch, Tooltip } from 'antd';
+import { Button, message, Modal, Space, Switch, Tooltip } from 'antd';
 import { ProFormText, ProFormTextArea, ModalForm, ProFormInstance } from '@ant-design/pro-form';
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { createPostTag, findManyPostTag, updatePostTag } from '@/features/common/services';
+import { DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { createPostTag, deletePostTag, findManyPostTag, updatePostTag } from '@/features/common/services';
 import { CreatePostTagReq, PostTag } from '@/features/common/types';
+import { useRequest } from 'ice';
 
 export const PostTagManagement: React.FC = () => {
   const actionRef = useRef<ActionType>();
@@ -15,6 +16,9 @@ export const PostTagManagement: React.FC = () => {
     id: '',
     isDeleted: false,
     name: '',
+  });
+  const { request: deletePostTagFn } = useRequest(deletePostTag, {
+    manual: true,
   });
 
   const title = useMemo(() => {
@@ -86,27 +90,49 @@ export const PostTagManagement: React.FC = () => {
     },
     {
       title: '操作',
-      width: 60,
+      width: 150,
       align: 'center',
       fixed: 'right',
       valueType: 'option',
       search: false,
-      render: (_, category) => {
+      render: (_, tag) => {
         return (
-          <Tooltip placement="top" title="编辑文章文章标签">
-            <Button
-              icon={<EditOutlined />}
-              onClick={() => {
-                setCurrentPostTag(category);
-                const timer = window.setTimeout(() => {
-                  // 这里设置延时是因为第一次，form可能未创建，立即设置值可能不生效，所以设置延时
-                  formRef.current?.setFieldsValue(category);
-                  window.clearTimeout(timer);
-                }, 500);
-                setVisible(true);
-              }}
-            />
-          </Tooltip>
+          <Space>
+            <Tooltip placement="top" title="编辑文章标签">
+              <Button
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setCurrentPostTag(tag);
+                  const timer = window.setTimeout(() => {
+                    // 这里设置延时是因为第一次，form可能未创建，立即设置值可能不生效，所以设置延时
+                    formRef.current?.setFieldsValue(tag);
+                    window.clearTimeout(timer);
+                  }, 500);
+                  setVisible(true);
+                }}
+              />
+            </Tooltip>
+            <Tooltip placement="top" title="删除文章分类">
+              <Button
+                icon={<DeleteOutlined />}
+                danger
+                onClick={async () => {
+                  Modal.confirm({
+                    title: '提示',
+                    icon: <ExclamationCircleOutlined />,
+                    content: `此操作将会删除名称为【${tag.name}】的文章分类，删除后不可恢复`,
+                    okText: '确认',
+                    cancelText: '取消',
+                    onOk: async () => {
+                      await deletePostTagFn(tag.id);
+                      actionRef.current?.reload();
+                      message.success(`【${tag.name}】文章分类删除成功`);
+                    },
+                  });
+                }}
+              />
+            </Tooltip>
+          </Space>
         );
       },
     },

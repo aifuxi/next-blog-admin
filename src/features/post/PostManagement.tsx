@@ -40,7 +40,7 @@ export const PostManagement: React.FC = () => {
     defaultParams: [{ limit: 1000, offset: 0 }],
     manual: false,
   });
-  const { data: deletedPostRes, request: deletePostFn } = useRequest(deletePost, {
+  const { request: deletePostFn } = useRequest(deletePost, {
     manual: true,
   });
 
@@ -156,7 +156,7 @@ export const PostManagement: React.FC = () => {
       },
     },
     {
-      title: '是否软删除',
+      title: '软删除',
       dataIndex: 'isDeleted',
       tooltip: '软删除后的数据在前端不可见，后台可见',
       width: 80,
@@ -224,15 +224,15 @@ export const PostManagement: React.FC = () => {
             danger
             onClick={async () => {
               Modal.confirm({
-                title: 'Confirm',
+                title: '提示',
                 icon: <ExclamationCircleOutlined />,
-                content: `此操作将会删除id：${post.id}，标题：${post.title}的文章，不可恢复！！！`,
+                content: `此操作将会删除标题为【${post.title}】的文章，删除后不可恢复`,
                 okText: '确认',
                 cancelText: '取消',
                 onOk: async () => {
                   await deletePostFn(post.id);
                   actionRef.current?.reload();
-                  message.success(`【${deletedPostRes?.data?.title}】文章删除成功`);
+                  message.success(`【${post.title}】文章删除成功`);
                 },
               });
             }}
