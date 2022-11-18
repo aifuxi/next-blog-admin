@@ -12,9 +12,10 @@ import {
   getPost,
   updatePost,
 } from '../common/services';
-import { IS_DELETED_ENUM, IS_PUBLISHED_ENUM, Post } from '../common/types';
+import { IS_DELETED_ENUM, IS_PUBLISHED_ENUM, Post, POST_TYPE_ENUM } from '../common/types';
 import { POST_EDIT_URL } from '@/constants/path';
 import MarkdownEditor from '@/components/MarkdownEditor';
+import { typeMap } from './config';
 
 export const PostManagement: React.FC = () => {
   const history = useHistory();
@@ -25,6 +26,7 @@ export const PostManagement: React.FC = () => {
     content: '',
     createdAt: new Date(),
     id: '',
+    type: POST_TYPE_ENUM.ORIGINAL,
     description: '',
     isDeleted: IS_DELETED_ENUM.NO,
     tags: [],
@@ -48,6 +50,10 @@ export const PostManagement: React.FC = () => {
   tagData?.data.lists?.forEach((tag) => {
     tagMap.set(tag.id, { text: tag.name, status: tag.id });
   });
+  const postTypeMap = new Map();
+  postTypeMap.set(POST_TYPE_ENUM.ORIGINAL, { text: '原创', status: POST_TYPE_ENUM.ORIGINAL });
+  postTypeMap.set(POST_TYPE_ENUM.TRANSLATION, { text: '翻译', status: POST_TYPE_ENUM.TRANSLATION });
+  postTypeMap.set(POST_TYPE_ENUM.TRANSSHIPMENT, { text: '转载', status: POST_TYPE_ENUM.TRANSSHIPMENT });
 
   const categoryMap = new Map();
   categoryData?.data.lists?.forEach((category) => {
@@ -130,6 +136,14 @@ export const PostManagement: React.FC = () => {
           )}
         </Space>
       ),
+    },
+    {
+      title: '文章类型',
+      dataIndex: 'type',
+      width: 100,
+      valueType: 'select',
+      valueEnum: postTypeMap,
+      render: (_, post) => (post.type ? <Tag color="gold">{typeMap[post.type]}</Tag> : <Tag>暂无</Tag>),
     },
     {
       title: '文章阅读量',
@@ -260,12 +274,23 @@ export const PostManagement: React.FC = () => {
         actionRef={actionRef}
         request={async (params) => {
           // 表单搜索项会从 params 传入，传递给后端接口。
-          const { current: page = 1, pageSize = 10, title, id, categories, tags, isPublished, isDeleted } = params;
+          const {
+            current: page = 1,
+            pageSize = 10,
+            title,
+            id,
+            categories,
+            tags,
+            isPublished,
+            isDeleted,
+            type,
+          } = params;
           const { data } = await findManyPosts({
             title,
             id,
             isPublished,
             isDeleted,
+            type,
             offset: (page - 1) * pageSize,
             limit: pageSize,
             categories,

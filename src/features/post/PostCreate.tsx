@@ -6,7 +6,7 @@ import {
   findManyPostTag,
   uploadFile,
 } from '@/features/common/services';
-import { CreatePostReq } from '@/features/common/types';
+import { CreatePostReq, POST_TYPE_ENUM } from '@/features/common/types';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import ProForm, { ProFormText, ProFormSelect, ProFormTextArea, FormInstance } from '@ant-design/pro-form';
@@ -43,6 +43,7 @@ export const PostCreate: React.FC = () => {
             tags: data.tags?.map((tag) => tag.id),
             categories: data.categories?.map((category) => category.id),
             description: data.description,
+            type: data.type,
           });
         });
       });
@@ -63,6 +64,21 @@ export const PostCreate: React.FC = () => {
       return [];
     }
   }, [tagData]);
+
+  const typeOptions: DefaultOptionType[] = [
+    {
+      value: POST_TYPE_ENUM.ORIGINAL,
+      label: '原创',
+    },
+    {
+      value: POST_TYPE_ENUM.TRANSLATION,
+      label: '翻译',
+    },
+    {
+      value: POST_TYPE_ENUM.TRANSSHIPMENT,
+      label: '转载',
+    },
+  ];
 
   const categoryOptions = useMemo<DefaultOptionType[]>(() => {
     if (categoryData) {
@@ -107,10 +123,10 @@ export const PostCreate: React.FC = () => {
             }}
             onFinish={async (value) => {
               const req: CreatePostReq = { content, ...value };
-              const { title, description, tags, categories } = req;
+              const { title, description, tags, categories, type } = req;
               if (id) {
                 // 更新文章
-                await updatePost(id, { title, description, tags, content, categories });
+                await updatePost(id, { title, description, tags, content, categories, type });
                 message.success(`【${value.title}】文章修改成功`);
               } else {
                 // 创建文章
@@ -160,11 +176,27 @@ export const PostCreate: React.FC = () => {
               name="tags"
               label="文章标签"
             />
+            <ProFormSelect
+              placeholder={'请选择文章类型'}
+              width={'md'}
+              rules={[
+                {
+                  required: true,
+                  message: '请选择文章类型',
+                },
+              ]}
+              colProps={{
+                span: 8,
+              }}
+              options={typeOptions}
+              name="type"
+              label="文章类型"
+            />
             <ProFormTextArea
               width="xl"
               label="文章简介"
               colProps={{
-                span: 24,
+                span: 16,
               }}
               placeholder={'请输入文章简介'}
               name="description"

@@ -23,3 +23,12 @@ export enum POST_SORT_BY_ENUM {
   UPDATED_TIME = 'updatedTime',
   PUBLISHED_TIME = 'publishedTime',
 }
+
+export enum POST_TYPE_ENUM {
+  // 翻译
+  TRANSLATION = 'TRANSLATION',
+  // 转载
+  TRANSSHIPMENT = 'TRANSSHIPMENT',
+  // 原创
+  ORIGINAL = 'ORIGINAL',
+}
