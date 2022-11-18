@@ -1,7 +1,7 @@
 import { PaginationReq } from './base';
 import { PostCategory } from './postCategory';
 import { PostTag } from './postTag';
-import { PostSortByEnum } from './sort-enum';
+import { POST_SORT_BY_ENUM, IS_DELETED_ENUM, IS_PUBLISHED_ENUM } from './enum';
 import { Prisma } from '@prisma/client';
 
 export interface CreatePostReq {
@@ -12,7 +12,7 @@ export interface CreatePostReq {
   tags?: string[];
 }
 
-export type UpdatePostReq = Partial<CreatePostReq & { isDeleted: boolean; isPublished?: boolean }>;
+export type UpdatePostReq = Partial<CreatePostReq & { isDeleted: IS_DELETED_ENUM; isPublished?: IS_PUBLISHED_ENUM }>;
 
 export interface Post {
   id: string;
@@ -20,8 +20,8 @@ export interface Post {
   description?: string;
   content: string;
   view: number;
-  isDeleted: boolean;
-  isPublished: boolean;
+  isDeleted: IS_DELETED_ENUM;
+  isPublished: IS_PUBLISHED_ENUM;
   createdAt: Date;
   updatedAt: Date;
   publishedAt?: Date;
@@ -36,6 +36,6 @@ export interface FindManyPostReq extends PaginationReq {
   isDeleted?: boolean;
   categories?: string[];
   tags?: string[];
-  sortBy?: PostSortByEnum;
+  sortBy?: POST_SORT_BY_ENUM;
   order?: Prisma.SortOrder;
 }

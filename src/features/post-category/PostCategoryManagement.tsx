@@ -1,14 +1,14 @@
 import {
   createPostCategory,
-  updatePostCategory,
-  findManyPostCategory,
   deletePostCategory,
+  findManyPostCategory,
+  updatePostCategory,
 } from '@/features/common/services';
-import { CreatePostCategoryReq, PostCategory } from '@/features/common/types';
+import { CreatePostCategoryReq, IS_DELETED_ENUM, PostCategory } from '@/features/common/types';
 import React, { useMemo, useRef, useState } from 'react';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button, message, Modal, Space, Switch, Tooltip } from 'antd';
-import { ProFormText, ProFormTextArea, ModalForm, ProFormInstance } from '@ant-design/pro-form';
+import { ModalForm, ProFormInstance, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import { DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useRequest } from 'ice';
 
@@ -19,7 +19,7 @@ export const PostCategoryManagement: React.FC = () => {
   const [currentPostCategory, setCurrentPostCategory] = useState<PostCategory>({
     description: '',
     id: '',
-    isDeleted: false,
+    isDeleted: IS_DELETED_ENUM.NO,
     name: '',
   });
   const { request: deletePostCategoryFn } = useRequest(deletePostCategory, {
@@ -29,6 +29,11 @@ export const PostCategoryManagement: React.FC = () => {
   const title = useMemo(() => {
     return currentPostCategory.id ? '编辑文章分类' : '新建文章分类';
   }, [currentPostCategory]);
+
+  const isDeletedMap = new Map();
+  isDeletedMap.set(IS_DELETED_ENUM.NO, { text: '未删除', status: IS_DELETED_ENUM.NO });
+  isDeletedMap.set(IS_DELETED_ENUM.YES, { text: '已删除', status: IS_DELETED_ENUM.YES });
+
   const columns: Array<ProColumns<PostCategory>> = [
     {
       title: '序号',
@@ -59,18 +64,20 @@ export const PostCategoryManagement: React.FC = () => {
       search: false,
     },
     {
-      title: '是否删除',
+      title: '软删除',
       dataIndex: 'isDeleted',
+      tooltip: '软删除后的数据在前端不可见，后台可见',
       width: 80,
+      valueType: 'select',
+      valueEnum: isDeletedMap,
       align: 'center',
       fixed: 'right',
-      search: false,
       render: (_, post) => {
         return (
           <Switch
-            checked={post.isDeleted}
+            checked={Boolean(post.isDeleted)}
             onClick={async (isDeleted) => {
-              await updatePostCategory(post.id, { isDeleted });
+              await updatePostCategory(post.id, { isDeleted: Number(isDeleted) });
               actionRef.current?.reload();
             }}
           />
@@ -200,8 +207,14 @@ export const PostCategoryManagement: React.FC = () => {
         }}
         request={async (params) => {
           // 表单搜索项会从 params 传入，传递给后端接口。
-          const { current: page = 1, pageSize = 10, name, id } = params;
-          const { data } = await findManyPostCategory({ name, id, offset: (page - 1) * pageSize, limit: pageSize });
+          const { current: page = 1, pageSize = 10, name, id, isDeleted } = params;
+          const { data } = await findManyPostCategory({
+            name,
+            id,
+            offset: (page - 1) * pageSize,
+            limit: pageSize,
+            isDeleted,
+          });
           return Promise.resolve({
             data: data.lists,
             total: data.total,

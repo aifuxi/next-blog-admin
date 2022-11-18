@@ -12,7 +12,7 @@ import {
   getPost,
   updatePost,
 } from '../common/services';
-import { Post } from '../common/types';
+import { IS_DELETED_ENUM, IS_PUBLISHED_ENUM, Post } from '../common/types';
 import { POST_EDIT_URL } from '@/constants/path';
 import MarkdownEditor from '@/components/MarkdownEditor';
 
@@ -26,12 +26,12 @@ export const PostManagement: React.FC = () => {
     createdAt: new Date(),
     id: '',
     description: '',
-    isDeleted: false,
+    isDeleted: IS_DELETED_ENUM.NO,
     tags: [],
     title: '',
     updatedAt: new Date(),
     view: 0,
-    isPublished: false,
+    isPublished: IS_PUBLISHED_ENUM.NO,
     publishedAt: new Date(),
   });
 
@@ -53,6 +53,14 @@ export const PostManagement: React.FC = () => {
   categoryData?.data.lists?.forEach((category) => {
     categoryMap.set(category.id, category.name);
   });
+
+  const isDeletedMap = new Map();
+  isDeletedMap.set(IS_DELETED_ENUM.NO, { text: '未删除', status: IS_DELETED_ENUM.NO });
+  isDeletedMap.set(IS_DELETED_ENUM.YES, { text: '已删除', status: IS_DELETED_ENUM.YES });
+
+  const isPublishedMap = new Map();
+  isPublishedMap.set(IS_PUBLISHED_ENUM.NO, { text: '未发布', status: IS_PUBLISHED_ENUM.NO });
+  isPublishedMap.set(IS_PUBLISHED_ENUM.YES, { text: '已发布', status: IS_PUBLISHED_ENUM.YES });
 
   const columns: Array<ProColumns<Post>> = [
     {
@@ -140,15 +148,16 @@ export const PostManagement: React.FC = () => {
       title: '是否发布',
       dataIndex: 'isPublished',
       width: 80,
-      valueType: 'switch',
+      valueType: 'select',
+      valueEnum: isPublishedMap,
       align: 'center',
       fixed: 'right',
       render: (_, post) => {
         return (
           <Switch
-            checked={post.isPublished}
+            checked={Boolean(post.isPublished)}
             onClick={async (isPublished) => {
-              await updatePost(post.id, { isPublished });
+              await updatePost(post.id, { isPublished: Number(isPublished) });
               actionRef.current?.reload();
             }}
           />
@@ -160,15 +169,16 @@ export const PostManagement: React.FC = () => {
       dataIndex: 'isDeleted',
       tooltip: '软删除后的数据在前端不可见，后台可见',
       width: 80,
-      valueType: 'switch',
+      valueType: 'select',
+      valueEnum: isDeletedMap,
       align: 'center',
       fixed: 'right',
       render: (_, post) => {
         return (
           <Switch
-            checked={post.isDeleted}
+            checked={Boolean(post.isDeleted)}
             onClick={async (isDeleted) => {
-              await updatePost(post.id, { isDeleted });
+              await updatePost(post.id, { isDeleted: Number(isDeleted) });
               actionRef.current?.reload();
             }}
           />

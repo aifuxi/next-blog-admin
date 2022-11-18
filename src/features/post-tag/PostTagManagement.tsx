@@ -1,10 +1,10 @@
 import React, { useMemo, useRef, useState } from 'react';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button, message, Modal, Space, Switch, Tooltip } from 'antd';
-import { ProFormText, ProFormTextArea, ModalForm, ProFormInstance } from '@ant-design/pro-form';
+import { ModalForm, ProFormInstance, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import { DeleteOutlined, EditOutlined, ExclamationCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { createPostTag, deletePostTag, findManyPostTag, updatePostTag } from '@/features/common/services';
-import { CreatePostTagReq, PostTag } from '@/features/common/types';
+import { CreatePostTagReq, IS_DELETED_ENUM, PostTag } from '@/features/common/types';
 import { useRequest } from 'ice';
 
 export const PostTagManagement: React.FC = () => {
@@ -14,7 +14,7 @@ export const PostTagManagement: React.FC = () => {
   const [currentPostTag, setCurrentPostTag] = useState<PostTag>({
     description: '',
     id: '',
-    isDeleted: false,
+    isDeleted: IS_DELETED_ENUM.NO,
     name: '',
   });
   const { request: deletePostTagFn } = useRequest(deletePostTag, {
@@ -24,6 +24,10 @@ export const PostTagManagement: React.FC = () => {
   const title = useMemo(() => {
     return currentPostTag.id ? '编辑文章标签' : '新建文章标签';
   }, [currentPostTag]);
+
+  const isDeletedMap = new Map();
+  isDeletedMap.set(IS_DELETED_ENUM.NO, { text: '未删除', status: IS_DELETED_ENUM.NO });
+  isDeletedMap.set(IS_DELETED_ENUM.YES, { text: '已删除', status: IS_DELETED_ENUM.YES });
   const columns: Array<ProColumns<PostTag>> = [
     {
       title: '序号',
@@ -54,18 +58,20 @@ export const PostTagManagement: React.FC = () => {
       search: false,
     },
     {
-      title: '是否删除',
+      title: '软删除',
       dataIndex: 'isDeleted',
+      tooltip: '软删除后的数据在前端不可见，后台可见',
       width: 80,
+      valueType: 'select',
+      valueEnum: isDeletedMap,
       align: 'center',
       fixed: 'right',
-      search: false,
       render: (_, post) => {
         return (
           <Switch
-            checked={post.isDeleted}
+            checked={Boolean(post.isDeleted)}
             onClick={async (isDeleted) => {
-              await updatePostTag(post.id, { isDeleted });
+              await updatePostTag(post.id, { isDeleted: Number(isDeleted) });
               actionRef.current?.reload();
             }}
           />
@@ -195,8 +201,14 @@ export const PostTagManagement: React.FC = () => {
         }}
         request={async (params) => {
           // 表单搜索项会从 params 传入，传递给后端接口。
-          const { current: page = 1, pageSize = 10, name, id } = params;
-          const { data } = await findManyPostTag({ name, id, offset: (page - 1) * pageSize, limit: pageSize });
+          const { current: page = 1, pageSize = 10, name, id, isDeleted } = params;
+          const { data } = await findManyPostTag({
+            name,
+            id,
+            offset: (page - 1) * pageSize,
+            limit: pageSize,
+            isDeleted,
+          });
           return Promise.resolve({
             data: data.lists,
             total: data.total,
